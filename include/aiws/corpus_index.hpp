@@ -23,9 +23,9 @@ namespace aiws
         explicit CorpusIndex(const std::vector<Chunk> &chunks);
 
         void build(const std::vector<Chunk> &chunks);
-        std::size_t document_frequency(const std::string &normalized_term) const noexcept;
+        std::size_t document_frequency(const std::string &normalized_term) const;
         std::size_t term_frequency(const std::string &normalized_term,
-                                   const std::string &chunk_id) const noexcept;
+                                   const std::string &chunk_id) const;
         const std::vector<Posting> *postings(const std::string &normalized_term) const noexcept;
         const Chunk *find_chunk(const std::vector<Chunk> &chunks,
                                 const std::string &chunk_id) const noexcept;

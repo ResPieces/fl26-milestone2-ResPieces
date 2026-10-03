@@ -309,7 +309,7 @@ namespace aiws
         std::vector<SearchResult> searchResults = search(query, k);
 
         std::vector<ContextItem> output;
-        int tokensRemaining = token_budget;
+        std::size_t tokensRemaining = token_budget;
 
         for (SearchResult curResult : searchResults)
         {
