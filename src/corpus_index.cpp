@@ -66,7 +66,7 @@ namespace aiws
     }
 
     std::size_t CorpusIndex::document_frequency(
-        const std::string &normalized_term) const
+        const std::string &normalized_term) const noexcept
     {
         // TODO: return how many chunks contain the requested term.
         std::vector<std::string> normalizedTermVector = TextProcessor::terms(normalized_term);
@@ -87,7 +87,7 @@ namespace aiws
 
     std::size_t CorpusIndex::term_frequency(
         const std::string &normalized_term,
-        const std::string &chunk_id) const
+        const std::string &chunk_id) const noexcept
     {
         // TODO: return the requested term's frequency in the specified chunk.
 
