@@ -2,6 +2,8 @@
 #include "aiws/context_strategy.hpp"
 #include "aiws/processing_core.hpp"
 #include "aiws/retrieval_strategy.hpp"
+#include "aiws/context_builder.hpp"
+#include "aiws/retrieval_engine.hpp"
 
 #include <iostream>
 #include <memory>
@@ -43,6 +45,20 @@ namespace
         return s;
     }
 }
+
+class testChunker : public aiws::ChunkingStrategy
+{
+public:
+    std::vector<aiws::Chunk> chunk(const aiws::Document &document, std::size_t document_order) const override
+    {
+        aiws::Chunk customChunk;
+        customChunk.id = "#customChunkID";
+        customChunk.document_id = "#customDocumentID";
+        customChunk.text = "test text";
+        customChunk.token_count = 2;
+        return {customChunk};
+    }
+};
 
 int main()
 {
@@ -95,7 +111,7 @@ int main()
 
     /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
     *
-    *               Test: Default Constructor
+    *               Test 1: Default Constructor
     *    Purpose: Ensure functionality is the same as M1
     *
     ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
@@ -114,9 +130,70 @@ int main()
     if (failures == 0)
     {
         std::cout << "Default Contructor Tests Passed - M1 Core functionality retained\n";
-        return 0;
     }
-    std::cerr << failures << " Tests failed.\n";
+    else
+    {
+        std::cerr << failures << " Tests failed.\n";
+    }
+
+    /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+    *
+    *               Test 2: Custom Chunker Strat
+    *    Purpose: Ensure Custom Chunking Strategies can
+    *               be dynamically applied during runtime
+    *               by rebuilding the previous workpace
+    *               in the new core
+    *
+    ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+    failures = 0;
+
+    ProcessingCore custom_core(std::make_unique<testChunker>(), std::make_unique<RetrievalEngine>(), std::make_unique<ContextBuilder>());
+
+    custom_core.rebuild(ws);
+
+    check(custom_core.chunks()[0].id == "#customChunkID", "Custom Chunk ID check");
+    check(custom_core.chunks()[0].document_id == "#customDocumentID", "Custom Chunk Document ID check");
+    check(custom_core.chunks()[0].text == "test text", "Text Check");
+    check(custom_core.chunks()[0].token_count == 2, "Contains right amount of tokens");
+
+    if (failures == 0)
+    {
+        std::cout << "Custom Strategy Check Passes\n";
+    }
+    else
+    {
+        std::cerr << failures << " Tests failed.\n";
+    }
+
+    /*~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
+    *
+    *               Test 3: nullptr checks
+    *    Purpose: Ensure nullptrs in custom cores throw errors
+    *
+    ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-*/
+
+    failures = 0;
+
+    bool nullptr_thrown = false;
+    try
+    {
+        ProcessingCore custom_core2(std::make_unique<testChunker>(), nullptr, std::make_unique<ContextBuilder>());
+    }
+    catch (const std::invalid_argument &)
+    {
+        nullptr_thrown = true;
+    }
+    check(nullptr_thrown, "Nullptr Check");
+
+    if (failures == 0)
+    {
+        std::cout << "Nullptr Check Passed\n";
+    }
+    else
+    {
+        std::cerr << failures << " Tests failed.\n";
+    }
 
     return 1;
 }
