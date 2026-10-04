@@ -123,3 +123,4 @@ namespace aiws
             return {};
         return impl_->context->build(search(query, k), token_budget);
     }
+}
