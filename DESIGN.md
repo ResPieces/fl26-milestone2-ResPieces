@@ -27,6 +27,13 @@ Identify the classes or interfaces involved and explain both:
 
 Include one plausible design alternative and explain why the M2 design is preferable for this milestone. The alternative does not need to be something you actually implemented.
 
+    Answer: The big thing was the use of virtual functions for the three different strategies. By implementing
+        virtual functions that allowed for the creation of custom strategies, I allowed for the ability to
+        create more catered processing cores. Because of that generalized approach, my original M1 solutions
+        were able to inherit from the strategy files to preserve functionality. Another solution would have been
+        to simply keep creating files like chunker.cpp and hard coding them based on scenario, but that can get
+        cumbersome and unintutive later down the line.
+
 ## 4. Testing and defect reasoning - 1.5 points
 
 Select one meaningful test from your `tests/student_tests.cpp`.
@@ -37,3 +44,10 @@ Explain:
 - why your test provides useful evidence beyond simply rerunning the supplied public tests.
 
 If your test uses a custom strategy, explain how its observable behavior demonstrates that `ProcessingCore` is actually using runtime substitution.
+
+    Answer: I want to highlight my test 2. In student_test.cpp, I create a custom chunking strategy, which I then
+            apply to a custom processing core. The test leans on the workspace that was used to test the default
+            processing core in test 1. Upon running rebuild and checking the values of custom core, we can see
+            that they did change based on the workspace, and therefore runtime substitution works. This helps to
+            validate the wider goal of creating a system with dynamic rules based on a given case/strategy we wish
+            to pursue.
