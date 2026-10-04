@@ -46,7 +46,7 @@ namespace aiws
         std::vector<ContextItem> build_context(const std::string &query,
                                                int k,
                                                std::size_t token_budget) const;
-        std::vector<std::string> normalizeQuery(const std::string &query) const;
+        // std::vector<std::string> normalizeQuery(const std::string &query) const;
 
     private:
         struct Impl;

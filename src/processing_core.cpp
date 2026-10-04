@@ -153,7 +153,27 @@ namespace aiws
             return {};
         }
 
-        std::vector<std::string> queryTerms = normalizeQuery(query);
+        // std::vector<std::string> queryTerms = normalizeQuery(query);
+        //  Band-aid fix for helper funciton not working in autograder
+        std::vector<std::string> queryTerms;
+
+        std::vector<std::string> rawTerms = TextProcessor::terms(query);
+
+        for (size_t i = 0; i < rawTerms.size(); i++)
+        {
+            bool termAlreadyAdded = false;
+            for (size_t j = 0; j < queryTerms.size(); j++)
+            {
+                if (queryTerms.at(j) == rawTerms.at(i))
+                {
+                    termAlreadyAdded = true;
+                }
+            }
+            if (!termAlreadyAdded)
+            {
+                queryTerms.push_back(rawTerms.at(i));
+            }
+        }
 
         if (queryTerms.empty())
         {
@@ -249,30 +269,30 @@ namespace aiws
     }
 
     // Helper Function designed to remove repeated query words
-    std::vector<std::string> ProcessingCore::normalizeQuery(const std::string &query) const
-    {
-        std::vector<std::string> rawTerms = TextProcessor::terms(query);
+    // std::vector<std::string> ProcessingCore::normalizeQuery(const std::string &query) const
+    // {
+    //     std::vector<std::string> rawTerms = TextProcessor::terms(query);
 
-        std::vector<std::string> cleanTerms;
+    //     std::vector<std::string> cleanTerms;
 
-        for (size_t i = 0; i < rawTerms.size(); i++)
-        {
-            bool termAlreadyAdded = false;
-            for (size_t j = 0; j < cleanTerms.size(); j++)
-            {
-                if (cleanTerms.at(j) == rawTerms.at(i))
-                {
-                    termAlreadyAdded = true;
-                }
-            }
-            if (!termAlreadyAdded)
-            {
-                cleanTerms.push_back(rawTerms.at(i));
-            }
-        }
+    //     for (size_t i = 0; i < rawTerms.size(); i++)
+    //     {
+    //         bool termAlreadyAdded = false;
+    //         for (size_t j = 0; j < cleanTerms.size(); j++)
+    //         {
+    //             if (cleanTerms.at(j) == rawTerms.at(i))
+    //             {
+    //                 termAlreadyAdded = true;
+    //             }
+    //         }
+    //         if (!termAlreadyAdded)
+    //         {
+    //             cleanTerms.push_back(rawTerms.at(i));
+    //         }
+    //     }
 
-        return cleanTerms;
-    }
+    //     return cleanTerms;
+    // }
 
     /*
     ContextItem elements:
@@ -299,7 +319,28 @@ namespace aiws
             return {};
         }
 
-        std::vector<std::string> queryTerms = normalizeQuery(query);
+        // std::vector<std::string> queryTerms = normalizeQuery(query);
+
+        // Band-aid fix for helper funciton not working in autograder
+        std::vector<std::string> queryTerms;
+
+        std::vector<std::string> rawTerms = TextProcessor::terms(query);
+
+        for (size_t i = 0; i < rawTerms.size(); i++)
+        {
+            bool termAlreadyAdded = false;
+            for (size_t j = 0; j < queryTerms.size(); j++)
+            {
+                if (queryTerms.at(j) == rawTerms.at(i))
+                {
+                    termAlreadyAdded = true;
+                }
+            }
+            if (!termAlreadyAdded)
+            {
+                queryTerms.push_back(rawTerms.at(i));
+            }
+        }
 
         if (queryTerms.empty())
         {
